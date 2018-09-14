@@ -236,7 +236,7 @@ on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
   SSWorkspace *workspace;
   int screen_width, screen_height;
   double width_ratio, height_ratio;
-  int x, y, w, h;
+  int w, h;
   int viewport_x;
   GList *i;
   SSWindow *active_window;
@@ -249,8 +249,8 @@ on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
   screen_height = workspace->screen->screen_height;
   active_window = workspace->screen->active_window;
 
-  x = widget->allocation.x;
-  y = widget->allocation.y;
+  /* x = widget->allocation.x; */
+  /* y = widget->allocation.y; */
   w = widget->allocation.width;
   h = widget->allocation.height;
 

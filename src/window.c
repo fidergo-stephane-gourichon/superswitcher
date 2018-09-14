@@ -183,12 +183,12 @@ static gboolean
 on_button_release_event (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
   SSWindow *window;
-  WnckWindow *wnck_window;
+  /* WnckWindow *wnck_window; */
   SSScreen *screen;
   SSDragAndDrop *dnd;
   WnckWorkspace *wnck_workspace;
   window = (SSWindow *) data;
-  wnck_window = window->wnck_window;
+  /* wnck_window = window->wnck_window; */
   screen = window->screen;
   dnd = screen->drag_and_drop;
 
@@ -320,13 +320,13 @@ static void
 on_workspace_changed (WnckWindow *wnck_window, gpointer data)
 {
   SSWindow *window;
-  SSWorkspace *old_workspace;
+  /* SSWorkspace *old_workspace; */
   SSWorkspace *new_workspace;
   WnckWorkspace *new_wnck_workspace;
   int new_workspace_id;
 
   window = (SSWindow *) data;
-  old_workspace = window->workspace;
+  /* old_workspace = window->workspace; */
   new_wnck_workspace = wnck_window_get_workspace (wnck_window);
   if (new_wnck_workspace) {
     new_workspace_id = wnck_workspace_get_number (new_wnck_workspace);
