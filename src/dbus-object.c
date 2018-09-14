@@ -1,7 +1,9 @@
 // Copyright (c) 2006 Nigel Tao.
 // Licenced under the GNU General Public Licence (GPL) version 2.
 
-//#include "dbus-object.h"
+#include "dbus-object.h" // Ubuntu 12.04 did not like this, but it is
+                         // requires for prototype of
+                         // init_superswitcher_dbus
 #include <glib.h>
 #ifdef HAVE_DBUS_GLIB
 
@@ -9,6 +11,7 @@
 #include <dbus/dbus-glib-bindings.h>
 #include <stdlib.h>
 
+#include "dbus-object.h"
 #include "dbus-server-bindings.h"
 
 // SuperSwitcher's DBUS IDs

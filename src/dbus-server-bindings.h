@@ -5,6 +5,7 @@
 #define __dbus_glib_marshal_superswitcher_MARSHAL_H__
 
 #include	<glib-object.h>
+#include "forward_declarations.h"
 
 G_BEGIN_DECLS
 
