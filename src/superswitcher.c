@@ -87,7 +87,7 @@ grab (int keyval)
 //------------------------------------------------------------------------------
 
 static void
-disable_caps_lock_default_behavior ()
+disable_caps_lock_default_behavior (void)
 {
   Display *display;
   KeyCode keycode;
