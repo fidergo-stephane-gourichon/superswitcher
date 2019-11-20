@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=0.9.40
+Type=Application
+Name=Superswitcher
+Comment=Offers an overview of all opened windows on all workspaces, allows to easily switch workspace (Fn keys), activate a window (keyboard arrows, mouse click) or even filter by name and review matched (type part of name).
+Exec=@bindir@/superswitcher
+# OnlyShowIn=XFCE;
+StartupNotify=false
+Terminal=false
+Hidden=false
