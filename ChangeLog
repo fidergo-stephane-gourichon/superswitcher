@@ -1,3 +1,9 @@
+2019-12-15  Stéphane Gourichon  <stephane.gourichon@fidergo.fr>  revision 40
+
+  * Make superswitcher compatible with newer Ubuntu, up to 19.10.
+  * User-level and system-level installation instructions.
+  * New README.md
+
 2012-09-09  Nigel Tao  <nigeltao@gnome.org>  revision 39
 
   * Build fix for libgdk 2.22+, such as on Ubuntu Precise.
