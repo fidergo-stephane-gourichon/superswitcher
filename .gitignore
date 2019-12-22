@@ -23,3 +23,8 @@ src/Makefile
 src/Makefile.in
 data/superswitcher.SuperSwitcher.service
 *~
+data/SuperSwitcher.desktop
+\#*#
+.#*
+src/superswitcher
+rebuild.sh
