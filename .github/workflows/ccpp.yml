@@ -1,0 +1,22 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches:
+    - release/*
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Dependencies
+      run: apt-get install libwnck-dev
+    - name: configure
+      run: bash autogen.sh && ./configure
+    - name: make
+      run: make
+    - name: make check
+      run: make check
