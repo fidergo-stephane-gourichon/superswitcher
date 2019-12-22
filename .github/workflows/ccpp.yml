@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Dependencies
-      run: apt-get update && apt-get install libwnck-dev
+      run: sudo apt-get update && sudo apt-get install libwnck-dev
     - name: configure
       run: bash autogen.sh && ./configure
     - name: make
