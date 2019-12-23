@@ -1,5 +1,6 @@
 Source: superswitcher
-Maintainer: Stephane Gourichon <stephane.gourichon@fidergo.fr>, Nigel Tao <nigeltao@gnome.org>, Andrew Kerr <drewkerr@gmail.com>
+Maintainer: Stéphane Gourichon <stephane.gourichon@fidergo.fr>,
+    Nigel Tao <nigeltao@gnome.org>, Andrew Kerr <drewkerr@gmail.com>
 Section: x11
 Priority: optional
 Standards-Version: 3.9.2
