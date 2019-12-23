@@ -33,7 +33,8 @@ OUTDIR="$PKGDIR/../build_output_$( date +%Yy%mm%dd_%Hh%Mm%Ss )"
 mkdir "$OUTDIR"
 
 cd ..
-cp * "$OUTDIR"
+
+cp -v *.* "$OUTDIR"
 
 echo "Artifacts available in $OUTDIR:"
 
