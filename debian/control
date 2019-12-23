@@ -1,9 +1,9 @@
 Source: superswitcher
-Section: gnome
+Maintainer: Stéphane Gourichon <stephane.gourichon@fidergo.fr>, Nigel Tao <nigeltao@gnome.org>, Andrew Kerr <drewkerr@gmail.com>
+Section: x11
 Priority: optional
-Maintainer: Nigel Tao <nigeltao@gnome.org>, Andrew Kerr <drewkerr@gmail.com>
-Build-Depends: cdbs, debhelper (>= 4.1.0), libwnck-dev (>= 2.10.0)
-Standards-Version: 3.7.2
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9), gnome-common, libwnck-dev (>= 2.10.0)
 
 Package: superswitcher
 Architecture: any
@@ -11,55 +11,12 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Powerful window and workspace switching using the Super key
  SuperSwitcher is a (more feature-ful) replacement for the Alt-Tab window
  switching behavior and Ctrl-Alt-Left/Right/Up/Down workspace switching behavior
- that is currently provided by Metacity.
+ that is currently provided by most desktop environments.
  .
- When running, use the "Super" key (also known as the "Windows" key) to switch
- between windows and workspaces.  This key is usually found between the Ctrl and
- Alt keys on the keyboard.
+ In a nutshell, with SuperSwitcher you'll be able to easily jump to windows,
+ including by part of name, move them between desktop, perform some batch
+ operations, with intuitive key combinations involving the Super key.
  .
- Super-Tab works just like Alt-Tab does (with and without Shift), but also:
- .
- Super-Up and Super-Down cycles through all windows in the current workspace in
- a fixed order (as opposed to Alt-Tab or Super-Tab, whose list of windows is
- ordered by most-recently-used first - which is good if you want recently used
- windows, but it's clumsy to cycle through, for example, all three or four
- windows in the one workspace).  Hold down Shift to re-order the list instead of
- switching between windows.
- .
- Super-PageUp and Super-PageDown maximize and minimize the active window (or
- restores them if it was already maximized or minimized).  Super-Ctrl-PageUp and
- Super-Ctrl-PageDown do this to all windows on the current workspace, not just
- the active one.
- .
- Super-Left and Super-Right cycles through your workspaces.  Hold down Shift
- to also bring across the active window into the new workspace.  Hold down Shift
- and Ctrl to bring across all windows from one workspace to the next.  Unlike
- Metacity's Ctrl-Alt-Left and Ctrl-Alt-Right, this "loops" so that, when you get
- to the end of the list, you cycle back to the start.
- .
- Super-F1 moves to workspace number 1, Super-F2 moves to workspace number 2, and
- so on, up to Super-F12.  Again, hold down Shift to bring across the active
- window, and both Shift and Ctrl to bring across a flock of windows, just like
- as described above.
- .
- Super-Insert creates a new, empty workspace.  Again, hold down Shift to also
- bring across the active window (if there is one) into the new workspace.
- .
- Super-Delete deletes the current workspace, if it is empty.  Super-Shift-Delete
- will delete all empty workspaces, down to a minimum of one.
- .
- Super-Escape closes the active window.  Super-Ctrl-Escape will close all
- windows on this workspace.
- .
- Whilst holding down Super, typing regular letters or numbers will show you only
- those windows whose titles match that pattern.  Pressing Enter (whilst still
- holding down Super) will then cycle through the matches, regardless of which
- workspace you are on.  For example, if you have a lot of windows open, and you
- want to get to your web browser window that is showing planet.gnome.org, then
- hold down Super, then type "p" "l" "a" "Enter" and then release the Super key.
- Shift-Enter goes in the other direction than Enter (i.e., up and left with
- Shift, versus down and right without Shift).  Use the Space key to enter
- multiple word fragments, such as "pla gn", to further refine your search.
- .
- Finally, when holding down Super, click on image or text representing a window
- or a workspace to activate it.
+ It's like having most benefits of a tiling window manager, without the hassle:
+ no remembering of many obscure commands.  Try it, benefit immediately, you can
+ learn the rest later.
