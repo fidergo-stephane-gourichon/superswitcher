@@ -4,7 +4,7 @@ superswitcher (0.9-1) UNRELEASED; urgency=medium
 
  -- Stéphane Gourichon <stephane.gourichon@fidergo.fr>  Sun, 22 Dec 2019 16:56:03 +0100
 
-superswitcher (0.6) UNRELEASED; urgency=low
+superswitcher (0.6-1) UNRELEASED; urgency=low
 
   * Now builds on wnck 2.19 (new active_window_changed callback signature).
   * Now builds on gtk 2.11 (new tooltips API).
@@ -13,7 +13,7 @@ superswitcher (0.6) UNRELEASED; urgency=low
       
  -- Nigel Tao <nigeltao@gnome.org>  Mon, 22 Oct 2007 12:00:00 +1100
 
-superswitcher (0.5) UNRELEASED; urgency=low
+superswitcher (0.5-1) UNRELEASED; urgency=low
 
   * Plugged a memory leak.  Previously, we were not destroying cairo contexts.
   * First draft of a D-Bus interface.
@@ -23,7 +23,7 @@ superswitcher (0.5) UNRELEASED; urgency=low
 
  -- Nigel Tao <nigeltao@gnome.org>  Tue, 01 May 2007 12:00:00 +1100
  
-superswitcher (0.4) UNRELEASED; urgency=low
+superswitcher (0.4-1) UNRELEASED; urgency=low
  
   * Initial release
    
