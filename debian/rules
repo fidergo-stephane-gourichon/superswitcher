@@ -3,5 +3,5 @@
 	dh $@
 
 override_dh_auto_configure:
-	./autogen.sh
+	env NOCONFIGURE=indeed ./autogen.sh
 	dh_auto_configure
