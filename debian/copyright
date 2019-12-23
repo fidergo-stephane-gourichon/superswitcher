@@ -1,11 +1,11 @@
-This package was debianized by Nigel Tao <nigeltao@gnome.org> on
+This package was debianized again to reflect changes in Debian
+packaging process, by Stéphane Gourichon
+<stephane.gourichon@fidergo.fr> on Mon, 23 Dec 2019 17:24:00 +0100
+
+This package was debianized first by Nigel Tao <nigeltao@gnome.org> on
 Wed, 27 Dec 2006 14:45:45 +1100
 
-It was downloaded from http://www.gnomefiles.org/app.php/Superswitcher
-
-Upstream Author: Nigel Tao <nigeltao@gnome.org>
-
-Copyright: 2005-2006 Nigel Tao.
+Copyright: 2005-2006 Nigel Tao, 2019 Stéphane Gourichon
 
 License:
 

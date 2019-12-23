@@ -1,10 +1,16 @@
+superswitcher (0.9-1) UNRELEASED; urgency=medium
+
+  * Restart Debian packaging from scratch.
+
+ -- Stéphane Gourichon <stephane.gourichon@fidergo.fr>  Sun, 22 Dec 2019 16:56:03 +0100
+
 superswitcher (0.6) unstable; urgency=low
 
   * Now builds on wnck 2.19 (new active_window_changed callback signature).
   * Now builds on gtk 2.11 (new tooltips API).
   * First cut of window thumbnails (XComposite / XRender bling).
   * Now exits on unknown command line arguments.
-
+      
  -- Nigel Tao <nigeltao@gnome.org>  Mon, 22 Oct 2007 12:00:00 +1100
 
 superswitcher (0.5) unstable; urgency=low
@@ -16,9 +22,10 @@ superswitcher (0.5) unstable; urgency=low
   * --trigger-on-caps-lock split into --also-trigger... and --only-trigger...
 
  -- Nigel Tao <nigeltao@gnome.org>  Tue, 01 May 2007 12:00:00 +1100
-
+ 
 superswitcher (0.4) unstable; urgency=low
-
-  * Initial release
-
+ 
+ * Initial release
+   
  -- Nigel Tao <nigeltao@gnome.org>  Wed, 27 Dec 2006 14:45:45 +1100
+    
