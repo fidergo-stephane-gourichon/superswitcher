@@ -1,6 +1,29 @@
 superswitcher for Debian
 ------------------------
 
+From now on, debian package includes
+
+    /etc/xdg/autostart/SuperSwitcher.desktop
+
+which causes it to run by default on graphical user sessions of all
+users.
+
+## If any user want to disable it.
+
+Common desktop environments offer some kind of graphical interface
+allowing each user to review such programs listing can prevent this.
+
+The user can also manually:
+
+    cp /etc/xdg/autostart/SuperSwitcher.desktop ~/.config/autostart/SuperSwitcher.desktop
+
+and edit the copy so that the "Hidden" settings reads:
+
+    Hidden=true
+
+ -- Stéphane Gourichon <stephane_dpkg@gourichon.org>, Tue, 11 Feb 2020 15:02:52 +0100
+
+
 Note running instructions and caveats in README, especially:
 
   SuperSwitcher is best enjoyed if you automatically start the program
