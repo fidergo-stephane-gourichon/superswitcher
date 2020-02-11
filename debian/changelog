@@ -1,8 +1,9 @@
-superswitcher (0.9-1) UNRELEASED; urgency=medium
+superswitcher (0.9.1-1) UNRELEASED; urgency=medium
 
   * Restart Debian packaging from scratch.
+  * Now runs by default for all users, can be disabled see README.Debian.
 
- -- Stéphane Gourichon <stephane.gourichon@fidergo.fr>  Sun, 22 Dec 2019 16:56:03 +0100
+ -- Stéphane Gourichon <stephane.gourichon@fidergo.fr>  Tue, 11 Feb 2020 15:06:40 +0100
 
 superswitcher (0.6-1) UNRELEASED; urgency=low
 
