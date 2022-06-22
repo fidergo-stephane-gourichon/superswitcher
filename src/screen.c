@@ -586,7 +586,7 @@ add_window_to_screen (SSScreen *screen, WnckWindow *wnck_window)
 
 //------------------------------------------------------------------------------
 
-static void
+void
 update_window_label_width (SSScreen *screen)
 {
   PangoContext *context;

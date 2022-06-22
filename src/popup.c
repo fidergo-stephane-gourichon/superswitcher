@@ -811,6 +811,8 @@ popup_create (SSScreen *screen)
   GtkWidget *vbox;
   GtkWidget *align;
 
+  update_window_label_width(screen);
+
   ss_screen_update_search (screen, "");
 
   popup = g_new (Popup, 1);

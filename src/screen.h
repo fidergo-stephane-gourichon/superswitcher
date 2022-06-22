@@ -75,4 +75,6 @@ void   ss_screen_update_wnck_windows_in_stacking_order    (SSScreen *screen);
 SSWorkspace *   ss_screen_get_workspace_for_wnck_window   (SSScreen *screen, WnckWindow *wnck_window);
 
 SSWorkspace *   ss_screen_find_workspace_near_point   (SSScreen *screen, int x, int y);
+
+void update_window_label_width (SSScreen *screen);
 #endif
