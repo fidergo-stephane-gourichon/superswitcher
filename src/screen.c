@@ -605,9 +605,9 @@ update_window_label_width (SSScreen *screen)
 
   // The widget should be slightly less wide than the screen.  This is
   // completely arbitrary, but it looks OK on my machine.
-  width = (screen->xinerama->minimum_width * 3 / 4) / screen->num_workspaces;
+  width = (screen->xinerama->minimum_width * 4 / 4) / screen->num_workspaces;
   // Subtract off a bit for the icon, and the remainder is for the label.
-  width -= 30;
+  width -= 37;
   // convert from pixels to chars.
   width /= char_width;
 
