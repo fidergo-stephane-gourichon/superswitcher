@@ -586,12 +586,14 @@ add_window_to_screen (SSScreen *screen, WnckWindow *wnck_window)
 
 //------------------------------------------------------------------------------
 
+#define g_logvar(VARNAME) g_debug( #VARNAME "=%d", VARNAME)
+
 void
 update_window_label_width (SSScreen *screen)
 {
   PangoContext *context;
   PangoFontMetrics *metrics;
-  int width, char_width;
+  int char_width;
   SSWorkspace *workspace;
   SSWindow *window;
   GList *i;
@@ -601,17 +603,64 @@ update_window_label_width (SSScreen *screen)
   metrics = pango_context_get_metrics (context,
     screen->widget->style->font_desc, NULL);
   char_width = PANGO_PIXELS (pango_font_metrics_get_approximate_char_width (metrics));
+  g_logvar(char_width);
   pango_font_metrics_unref (metrics);
 
-  // The widget should be slightly less wide than the screen.  This is
-  // completely arbitrary, but it looks OK on my machine.
-  width = (screen->xinerama->minimum_width * 4 / 4) / screen->num_workspaces;
-  // Subtract off a bit for the icon, and the remainder is for the label.
-  width -= 37;
-  // convert from pixels to chars.
-  width /= char_width;
+  // On which screen is the mouse pointer? Is it the most
+  // straightforward way to anticipate where gtk will put our popup?
+  gint x,y;
+  gdk_display_get_pointer(gdk_display_get_default(), NULL, &x, &y, NULL);
+  g_debug("Mouse pointer at (%u,%u)\n", x, y);
 
-  screen->label_max_width_chars = width;
+  int screen_width = 800;
+  {
+    int matching_screen_count = 0;
+    SSXinerama *xinerama = screen->xinerama;
+    for (int i_s = 0; i_s < xinerama->num_screens; i_s++) {
+      SSXineramaScreen *xs = &(xinerama->screens[i_s]);
+      g_debug("Trying to match with screen at (%u,%u) dimensions (%u,%u).\n", xs->x, xs->y, xs->width, xs->height);
+      if (x < xs->x) continue;
+      if (x >= xs->x + xs->width) continue;
+      if (y < xs->y) continue;
+      if (y >= xs->y + xs->height) continue;
+      matching_screen_count++;
+      g_debug("Match count %u.\n", matching_screen_count);
+      screen_width = xs->width;
+    }
+
+    if (matching_screen_count != 1) {
+    g_warning("Not one screen contain coordinates (%u,%u) but %u.\n", x, y, matching_screen_count);
+    }
+  }
+
+  // We'd like to cover all screen width...
+  int window_width = screen_width;
+  g_logvar(window_width);
+  // But there are a few pixels of margin (should maybe compute them from gtk style, but is it even accessible here?)
+  window_width -= 10;
+  g_logvar(window_width);
+  // So divide by the number of columns to get width per column.
+  // Note: per C rules this rounds down, which is what we want.
+  int column_width = window_width / screen->num_workspaces;
+  g_logvar(column_width);
+  // Substract 2 chars for the ellipsis.
+  column_width -= 2*char_width;
+  g_logvar(column_width);
+  // Subtract off a bit for the icon and the margin.
+  column_width -= 16;
+  g_logvar(column_width);
+  // The remainder is for the label.
+  // Convert from pixels to chars.
+  int width_in_chars = column_width * 6 / (7 * char_width);
+  g_logvar(width_in_chars);
+  // We compute a max label width for all desktops.
+
+  // If a desktop (column) has a very long window title and the others
+  // have short titles, we will truncate the long and waste space
+  // because the short won't take it. It would make sense to compute
+  // per-column limit.
+
+  screen->label_max_width_chars = width_in_chars;
 
   for (i = screen->workspaces; i; i = i->next) {
     workspace = (SSWorkspace *) i->data;
