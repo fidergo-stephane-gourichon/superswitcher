@@ -94,7 +94,16 @@ Assuming you use a XDG-compliant desktop environment (pretty much any, noawadays
 
 ### Debian/Ubuntu package
 
-TODO
+From this repository tree, you can easily build your own binary package for Ubuntu or Debian, using the supplied `recompile_local_debian_package.sh` script.  If that doesn't work it's a bug and I'll be happy to hear about it.
+
+You probably needs something like this:
+
+```
+sudo apt install build-essential dpkg-dev
+bash recompile_local_debian_package.sh
+```
+
+The script will output a list of generated files, including a `.deb` file which is the compiled binary package, which you can install with e.g. `sudo dpkg --install /full/path/to/superswitcher_0.9.2-1_amd64.deb`.
 
 ## Other topics
 
