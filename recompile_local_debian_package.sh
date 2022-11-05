@@ -17,7 +17,7 @@ Added value :
 This script should be generic enough to be used in other programe.  It
 might be confused by stray version names with strange or worse, evil,
 characters, but if you name your package "little bobby tables" you
-deserve to to all this by hand.
+deserve to do all this by hand.
 
 Written by Stéphane Gourichon <stephane_dpkg@gourichon.org>
 
