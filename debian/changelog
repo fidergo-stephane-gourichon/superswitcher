@@ -1,3 +1,9 @@
+superswitcher (0.9.2-1) UNRELEASED; urgency=medium
+
+  * Refine computation for better use of width.
+
+ -- Stéphane Gourichon <stephane.gourichon@fidergo.fr>  Sat, 05 Nov 2022 12:15:07 +0100
+
 superswitcher (0.9.1-1) UNRELEASED; urgency=medium
 
   * Restart Debian packaging from scratch.
