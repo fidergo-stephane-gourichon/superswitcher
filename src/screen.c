@@ -374,7 +374,7 @@ ss_screen_activate_next_window_in_stacking_order (SSScreen *screen, gboolean bac
   WnckWindow *previous_eligible_wnck_window;
   gboolean should_activate_last_eligible_wnck_window;
   gboolean should_activate_next_eligible_wnck_window;
-  
+
   gboolean also_warp_pointer_if_necessary;
   also_warp_pointer_if_necessary = TRUE;
 
@@ -651,7 +651,7 @@ update_window_label_width (SSScreen *screen)
   g_logvar(column_width);
   // The remainder is for the label.
   // Convert from pixels to chars.
-  int width_in_chars = column_width * 6 / (7 * char_width);
+  int width_in_chars = column_width * 5 / (7 * char_width);
   g_logvar(width_in_chars);
   // We compute a max label width for all desktops.
 
