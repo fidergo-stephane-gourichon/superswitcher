@@ -94,16 +94,17 @@ Assuming you use a XDG-compliant desktop environment (pretty much any, noawadays
 
 ### Debian/Ubuntu package
 
-From this repository tree, you can easily build your own binary package for Ubuntu or Debian, using the supplied `recompile_local_debian_package.sh` script.  If that doesn't work it's a bug and I'll be happy to hear about it.
+From this repository tree, you can easily build your own binary package for Ubuntu (not 24.04 and later at the moment) or Debian, using the supplied `recompile_local_debian_package.sh` script.  If that doesn't work it's a bug and I'll be happy to hear about it.
 
 You probably needs something like this:
 
 ```
-sudo apt install build-essential dpkg-dev
+sudo apt install build-essential dpkg-dev debhelper git build-essential devscripts fakeroot lsb-release
+sudo apt install libwnck-dev # libwnck-3-dev in recent distro
 bash recompile_local_debian_package.sh
 ```
 
-The script will output a list of generated files, including a `.deb` file which is the compiled binary package, which you can install with e.g. `sudo dpkg --install /full/path/to/superswitcher_0.9.2-1_amd64.deb`.
+The script will output a list of generated files, including a `.deb` file which is the compiled binary package, which you can install with e.g. `sudo dpkg --install /full/path/to/superswitcher_0.9.3-1_amd64.deb`.
 
 ## Other topics
 
