@@ -9,46 +9,62 @@ DEFAULT_DISTROS=(debian:stable debian:testing debian:oldstable debian:oldoldstab
 ENGINE="docker"
 ENGINE_RUN_EXTRA_ARGS="-u $(id -u):$(id -g)"
 
-# Parse optional --engine argument
-if [[ $# -gt 0 && "$1" == --engine=* ]]; then
-    ENGINE_NAME="${1#--engine=}"
-    case "$ENGINE_NAME" in
-        docker)
+while [[ "$#" -gt 0 ]]
+do
+    case "$1" in
+        --engine=docker)
             ENGINE="docker"
             ENGINE_RUN_EXTRA_ARGS="-u $(id -u):$(id -g)"
             ;;
 
-        podman)
+        --engine=podman)
             ENGINE="podman"
             ENGINE_RUN_EXTRA_ARGS=""
             ;;
 
+        --distros=*)
+	    DISTROS_STRING=${1#--distros=}
+	    DISTROS_STRING=${DISTROS_STRING#\"}
+	    DISTROS_STRING=${DISTROS_STRING%\"}
+	    read -ra DISTROS <<< "$DISTROS_STRING"
+            ;;
+
         --)
-                shift
-                break
-                ;;
+            shift
+            break
+            ;;
 
         *)
-            echo "Error: not a supported engine \"$ENGINE_NAME\""
-            exit 1
+            echo >&2 "Unknown argument: $1"
+            ERRORS=$(( ${ERRORS:-0} +1 ))
             ;;
+
     esac
     shift
+done
+
+ARGS_FOR_RECOMPILE_SCRIPT="$@"
+
+if [[ -n "${ERRORS:-}" ]]
+then
+    echo >&2 "Error. Usage scriptname [--engine=docker] [--engine=podman] -- [arguments for recompile_local_debian_package.sh ...]"
+    echo >&2 "Default set of distros: ${DEFAULT_DISTROS[@]}"
+    exit 1
 fi
 
 # Handle distros
-if [[ $# == 0 ]]; then
+if [[ -z "${DISTROS:-}" ]]; then
     DISTROS=( "${DEFAULT_DISTROS[@]}" )
     echo "No specific distro names provided, using default distros set."
-else
-    DISTROS=( "$@" )
 fi
 
 echo "Using engine: $ENGINE"
 echo "ENGINE_RUN_EXTRA_ARGS: $ENGINE_RUN_EXTRA_ARGS"
 
 echo "Will build for distros:"
+echo
 printf "%s\n" "${DISTROS[@]}"
+echo
 
 echo "Starting..."
 
@@ -84,7 +100,7 @@ EOF
     ${ENGINE} run ${ENGINE_RUN_EXTRA_ARGS} --rm \
     -v "$PWD":/up/superswitcher:ro \
     -v "$(realpath "$ARTIFACT_BASE")":/up/artifacts \
-    "$IMG" bash -euxc '
+    "$IMG" bash -euxc "
 cd /up/superswitcher
 export HOME=/tmp
 git config --global --add safe.directory /up/superswitcher
@@ -95,20 +111,20 @@ if [ -f /etc/lsb-release ]; then
 elif [ -f /etc/os-release ]; then
     . /etc/os-release
     # Map os-release fields to expected variable names for compatibility
-    DISTRIB_ID="${ID:-unknown}"
-    DISTRIB_RELEASE="${VERSION_ID:-unknown}"
-    DISTRIB_CODENAME="${VERSION_CODENAME:-unknown}"
+    DISTRIB_ID=\"\${ID:-unknown}\"
+    DISTRIB_RELEASE=\"\${VERSION_ID:-unknown}\"
+    DISTRIB_CODENAME=\"\${VERSION_CODENAME:-unknown}\"
 else
-    DISTRIB_ID="unknown"
-    DISTRIB_RELEASE="unknown"
-    DISTRIB_CODENAME="unknown"
+    DISTRIB_ID=\"unknown\"
+    DISTRIB_RELEASE=\"unknown\"
+    DISTRIB_CODENAME=\"unknown\"
 fi
 
-OUT=/up/artifacts/build_artifacts_${DISTRIB_ID}_${DISTRIB_RELEASE}_${DISTRIB_CODENAME}
+OUT=/up/artifacts/build_artifacts_\${DISTRIB_ID}_\${DISTRIB_RELEASE}_\${DISTRIB_CODENAME}
 
-mkdir -p "$OUT"
-bash -xv recompile_local_debian_package.sh "$OUT"
-' 2>&1 | tee "$LOGFILE"
+mkdir -p \"\$OUT\"
+bash -xv recompile_local_debian_package.sh $ARGS_FOR_RECOMPILE_SCRIPT -- \"\$OUT\"
+" 2>&1 | tee "$LOGFILE"
 
 echo "...end for distro $DISTRO"
 
