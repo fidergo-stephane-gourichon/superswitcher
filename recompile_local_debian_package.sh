@@ -70,9 +70,14 @@ cd "${DIRNAMEFORDEB}"
 dpkg-checkbuilddeps
 debuild -us -uc
 
-OUTDIR="$PKGDIR/../build_output_$( date +%Yy%mm%dd_%Hh%Mm%Ss )"
+if [[ -n "${1:-}" ]]
+then
+    OUTDIR="${1}"
+else
+    OUTDIR="$PKGDIR/../build_output_$( date +%Yy%mm%dd_%Hh%Mm%Ss )}"
+fi
 
-mkdir "$OUTDIR"
+mkdir -p "$OUTDIR"
 
 cd ..
 
