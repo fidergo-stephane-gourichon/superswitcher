@@ -25,6 +25,7 @@ struct _SSXinerama {
 };
 
 SSXinerama *   ss_xinerama_new   (Display *x_display, Window x_root_window);
+void ss_xinerama_free(SSXinerama *xinerama);
 
 void   ss_xinerama_move_to_next_screen   (SSXinerama *xinerama, SSWindow *window);
 void   ss_xinerama_get_frame_extents     (SSXinerama *xinerama, SSWindow *window,

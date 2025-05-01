@@ -1045,7 +1045,7 @@ ss_screen_new (WnckScreen *wnck_screen, Display *x_display, Window x_root_window
 
   screen = (SSScreen *) g_object_new (SS_TYPE_SCREEN, NULL);
   screen->wnck_screen = wnck_screen;
-  screen->xinerama = ss_xinerama_new (x_display, x_root_window);
+  ss_screen_update_xinerama(screen, x_display, x_root_window);
   screen->screen_width  = wnck_screen_get_width (wnck_screen);
   screen->screen_height = wnck_screen_get_height (wnck_screen);
   screen->screen_aspect = (double) screen->screen_height / (double) screen->screen_width;
@@ -1129,4 +1129,14 @@ ss_screen_new (WnckScreen *wnck_screen, Display *x_display, Window x_root_window
   update_for_active_workspace (screen);
 
   return screen;
+}
+
+//------------------------------------------------------------------------------
+
+void ss_screen_update_xinerama(SSScreen *screen, Display *x_display, Window x_root_window) {
+    SSXinerama *old = screen->xinerama;
+    screen->xinerama = ss_xinerama_new(x_display, x_root_window);
+    if (old != NULL) {
+      ss_xinerama_free(old);
+    }
 }

@@ -75,6 +75,20 @@ ss_xinerama_new (Display *x_display, Window x_root_window)
 
 //------------------------------------------------------------------------------
 
+void
+ss_xinerama_free(SSXinerama *xinerama)
+{
+    if (xinerama == NULL) {
+        return;
+    }
+    if (xinerama->screens != NULL) {
+        g_free(xinerama->screens);
+    }
+    g_free(xinerama);
+}
+
+//------------------------------------------------------------------------------
+
 static int
 get_best_screen (SSXinerama *xinerama, SSWindow *window)
 {

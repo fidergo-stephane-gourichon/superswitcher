@@ -44,6 +44,8 @@ filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
   XEvent *x_event;
   x_event = (XEvent *) gdk_xevent;
 
+  ss_screen_update_xinerama(screen, gdk_x11_get_default_xdisplay(), DefaultRootWindow(gdk_x11_get_default_xdisplay()));
+
   switch (x_event->type) {
   case KeyPress:
     if (popup == NULL && popup_keycode_to_free == -1) {

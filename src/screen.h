@@ -61,6 +61,7 @@ struct _SSScreenClass {
 
 GType        ss_screen_get_type   (void);
 SSScreen *   ss_screen_new        (WnckScreen *wnck_screen, Display *x_display, Window x_root_window);
+void         ss_screen_update_xinerama(SSScreen *screen, Display *x_display, Window x_root_window);
 
 SSWorkspace *   ss_screen_get_nth_workspace   (SSScreen *screen, int n);
 
