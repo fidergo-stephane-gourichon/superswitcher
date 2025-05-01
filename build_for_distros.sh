@@ -5,13 +5,47 @@ declare -a DEFAULT_DISTROS DISTROS
 
 DEFAULT_DISTROS=(debian:stable debian:testing debian:oldstable debian:oldoldstable)
 
-if [[ $# == 0 ]]
-then
+# Defaults
+ENGINE="docker"
+ENGINE_RUN_EXTRA_ARGS="-u $(id -u):$(id -g)"
+
+# Parse optional --engine argument
+if [[ $# -gt 0 && "$1" == --engine=* ]]; then
+    ENGINE_NAME="${1#--engine=}"
+    case "$ENGINE_NAME" in
+        docker)
+            ENGINE="docker"
+            ENGINE_RUN_EXTRA_ARGS="-u $(id -u):$(id -g)"
+            ;;
+
+        podman)
+            ENGINE="podman"
+            ENGINE_RUN_EXTRA_ARGS=""
+            ;;
+
+        --)
+                shift
+                break
+                ;;
+
+        *)
+            echo "Error: not a supported engine \"$ENGINE_NAME\""
+            exit 1
+            ;;
+    esac
+    shift
+fi
+
+# Handle distros
+if [[ $# == 0 ]]; then
     DISTROS=( "${DEFAULT_DISTROS[@]}" )
     echo "No specific distro names provided, using default distros set."
 else
     DISTROS=( "$@" )
 fi
+
+echo "Using engine: $ENGINE"
+echo "ENGINE_RUN_EXTRA_ARGS: $ENGINE_RUN_EXTRA_ARGS"
 
 echo "Will build for distros:"
 printf "%s\n" "${DISTROS[@]}"
@@ -23,7 +57,7 @@ do
     echo "Start for distro ${DISTRO}..."
 
     DISTRO_IMAGE="${DISTRO}-slim"
-    if ! docker manifest inspect "${DISTRO_IMAGE}" > /dev/null 2>&1
+    if ! ${ENGINE} manifest inspect "${DISTRO_IMAGE}" > /dev/null 2>&1
     then
 	DISTRO_IMAGE="${DISTRO}"
     fi
@@ -39,7 +73,7 @@ do
     mkdir -p "$ARTIFACT_BASE"
 
     echo "Building image ${IMG} for $DISTRO (for caching)..."
-    docker build -t "$IMG" - <<EOF
+    ${ENGINE} build -t "$IMG" - <<EOF
 FROM $DISTRO_IMAGE
 RUN apt-get update && \
     apt-get install -y --no-install-recommends debhelper gnome-common git build-essential devscripts fakeroot lsb-release
@@ -47,7 +81,7 @@ RUN set -euxv ; for X in libwnck-dev libwnck-3-dev ; do apt-get install -y --no-
 EOF
 
     echo "Running build for $DISTRO with log to $LOGFILE"
-    docker run -u $(id -u):$(id -g) --rm \
+    ${ENGINE} run ${ENGINE_RUN_EXTRA_ARGS} --rm \
     -v "$PWD":/up/superswitcher:ro \
     -v "$(realpath "$ARTIFACT_BASE")":/up/artifacts \
     "$IMG" bash -euxc '
