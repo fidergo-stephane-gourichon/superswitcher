@@ -1,3 +1,19 @@
+superswitcher (0.9.3-1) UNRELEASED; urgency=medium
+
+  * Fix wrong popup window width adjustment after display arrangement changes.
+
+    Previously, if you changed your monitor setup (for example, by adding,
+    removing, rearranging displays, or simply changing screen definition)
+    while SuperSwitcher was running, it would not be notified of the new
+    arrangement. As a result, popups and window switching would use
+    outdated information about your screens until you restarted
+    SuperSwitcher. The most noticeable impact was too wide or too narrow
+    SuperSwitcher window. With this update, SuperSwitcher ensures its
+    interface and features always match your current monitor
+    configuration.
+
+ -- Stéphane Gourichon <stephane.gourichon@fidergo.fr>  Thu, 01 May 2025 18:51:59 +0200
+
 superswitcher (0.9.2-1) UNRELEASED; urgency=medium
 
   * Refine computation for better use of width.
