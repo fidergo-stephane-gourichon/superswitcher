@@ -3,7 +3,7 @@ Maintainer: Stéphane Gourichon <stephane_dpkg@gourichon.org>
 Section: x11
 Priority: optional
 Standards-Version: 4.4.0
-Build-Depends: debhelper (>= 9), gnome-common, libwnck-dev (>= 2.10.0)
+Build-Depends: debhelper (>= 9), gnome-common, libwnck-dev (>= 2.10.0) | libwnck-3-dev
 
 Package: superswitcher
 Architecture: any
