@@ -2,10 +2,6 @@
 %:
 	dh $@
 
-override_dh_auto_configure:
-	env NOCONFIGURE=indeed ./autogen.sh
-	dh_auto_configure
-
 override_dh_auto_install:
 	dh_auto_install
 	install -D data/SuperSwitcher.desktop debian/superswitcher/etc/xdg/autostart/SuperSwitcher.desktop
