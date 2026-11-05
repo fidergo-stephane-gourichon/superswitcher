@@ -2,7 +2,11 @@ Source: superswitcher
 Maintainer: Stéphane Gourichon <stephane_dpkg@gourichon.org>
 Section: x11
 Priority: optional
-Standards-Version: 4.4.0
+Standards-Version: 4.7.2
+Homepage: https://github.com/fidergo-stephane-gourichon/superswitcher
+Vcs-Browser: https://github.com/fidergo-stephane-gourichon/superswitcher
+Vcs-Git: https://github.com/fidergo-stephane-gourichon/superswitcher.git
+Rules-Requires-Root: no
 Build-Depends:
  debhelper-compat (= 13),
  gnome-common,
