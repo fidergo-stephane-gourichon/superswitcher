@@ -10,6 +10,7 @@
 #include "string.h"
 
 #include "draganddrop.h"
+#include "style.h"
 #include "window.h"
 #include "workspace.h"
 #include "xinerama.h"
@@ -557,18 +558,13 @@ on_leave_notify_event (GtkWidget *widget, GdkEvent *event, gpointer data)
 //------------------------------------------------------------------------------
 
 static gboolean
-on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
+on_draw (GtkWidget *widget, cairo_t *c, gpointer data)
 {
   Popup *popup;
   SSScreen *screen;
   SSDragAndDrop *dnd;
-  cairo_t *c;
-  GdkColormap *colormap;
-  GdkGC *gc;
-  GdkGCValues gc_values;
-  GdkColor color;
-  int rr, gg, bb;
-  GtkAllocation *a;
+  GdkRGBA color;
+  GtkAllocation a;
   int oldx0, oldx1, oldy0, oldy1, oldhalfheight;
   int newx0, newx1, newy0, newy1;
   int n;
@@ -578,35 +574,26 @@ on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
 
   dnd = screen->drag_and_drop;
   if ((dnd->is_dragging) && (dnd->drag_workspace != NULL)) {
-    c = gdk_cairo_create (popup->window->window);
     cairo_set_line_width (c, 2.0);
-
-    // Some contortions just to get the theme color as 0-255 RGB.
-    colormap = gdk_colormap_get_system ();
-    gc = widget->style->text_gc[GTK_STATE_NORMAL];
-    gdk_gc_get_values (gc, &gc_values);
-    gdk_colormap_query_color (colormap, gc_values.foreground.pixel, &color);
-    rr = (255 * color.red)   / 65535;
-    gg = (255 * color.green) / 65535;
-    bb = (255 * color.blue)  / 65535;
+    ss_style_get_color (widget, SS_COLOR_DRAG_OUTLINE, &color);
 
     if (dnd->drag_start_window != NULL) {
-      a = &(dnd->drag_start_window->widget->allocation);
-      oldx0 = -3 + a->x;
-      oldx1 = +3 + a->x + a->width;
-      oldy0 = -1 + a->y;
-      oldy1 = +1 + a->y + a->height;
-      oldhalfheight = a->height / 2;
+      gtk_widget_get_allocation (dnd->drag_start_window->widget, &a);
+      oldx0 = -3 + a.x;
+      oldx1 = +3 + a.x + a.width;
+      oldy0 = -1 + a.y;
+      oldy1 = +1 + a.y + a.height;
+      oldhalfheight = a.height / 2;
 
-      a = &(dnd->drag_workspace->widget->allocation);
-      newx0 = -3 + a->x;
-      newx1 = +3 + a->x + a->width;
-      a = &(dnd->drag_workspace->window_container->allocation);
-      y = a->y;
+      gtk_widget_get_allocation (dnd->drag_workspace->widget, &a);
+      newx0 = -3 + a.x;
+      newx1 = +3 + a.x + a.width;
+      gtk_widget_get_allocation (dnd->drag_workspace->window_container, &a);
+      y = a.y;
       n = g_list_length (dnd->drag_workspace->windows);
       if (n != 0) {
         if (dnd->new_window_index != -1) {
-          y += (a->height * dnd->new_window_index) / n;
+          y += (a.height * dnd->new_window_index) / n;
         }
       } else {
         y += oldhalfheight;
@@ -614,17 +601,17 @@ on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
       newy0 = -1 + y - oldhalfheight;
       newy1 = +1 + y + oldhalfheight;
     } else {
-      a = &(dnd->drag_start_workspace->widget->allocation);
-      oldx0 = -4 + a->x;
-      oldx1 = +4 + a->x + a->width;
-      oldy0 = -2 + a->y;
-      oldy1 = +2 + a->y + a->height;
+      gtk_widget_get_allocation (dnd->drag_start_workspace->widget, &a);
+      oldx0 = -4 + a.x;
+      oldx1 = +4 + a.x + a.width;
+      oldy0 = -2 + a.y;
+      oldy1 = +2 + a.y + a.height;
 
-      a = &(dnd->drag_workspace->widget->allocation);
-      newx0 = -4 + a->x;
-      newx1 = +4 + a->x + a->width;
-      newy0 = -2 + a->y;
-      newy1 = +2 + a->y + a->height;
+      gtk_widget_get_allocation (dnd->drag_workspace->widget, &a);
+      newx0 = -4 + a.x;
+      newx1 = +4 + a.x + a.width;
+      newy0 = -2 + a.y;
+      newy1 = +2 + a.y + a.height;
     }
 
     cairo_move_to (c, oldx0, oldy0);
@@ -632,7 +619,7 @@ on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
     cairo_line_to (c, oldx1, oldy1);
     cairo_line_to (c, oldx0, oldy1);
     cairo_close_path (c);
-    cairo_set_source_rgba (c, rr, gg, bb, 0.25);
+    cairo_set_source_rgba (c, color.red, color.green, color.blue, 0.25);
     cairo_stroke (c);
 
     cairo_move_to (c, newx0, newy0);
@@ -640,9 +627,8 @@ on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
     cairo_line_to (c, newx1, newy1);
     cairo_line_to (c, newx0, newy1);
     cairo_close_path (c);
-    cairo_set_source_rgba (c, rr, gg, bb, 0.75);
+    cairo_set_source_rgba (c, color.red, color.green, color.blue, 0.75);
     cairo_stroke (c);
-    cairo_destroy (c);
   }
   return FALSE;
 }
@@ -656,7 +642,9 @@ search_widget_create (Popup *popup)
   PangoAttribute *pa;
   PangoAttrList *pal;
 
-  box = gtk_hbox_new (FALSE, WORKSPACE_COLUMN_SPACING);
+  box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, WORKSPACE_COLUMN_SPACING);
+  gtk_widget_set_halign (box, GTK_ALIGN_CENTER);
+  gtk_widget_set_hexpand (box, TRUE);
   gtk_container_add (GTK_CONTAINER (popup->search_container), box);
 
   gtk_box_pack_start (GTK_BOX (box), gtk_label_new ("Find:"), FALSE, FALSE, 0);
@@ -680,15 +668,15 @@ search_widget_create (Popup *popup)
 //------------------------------------------------------------------------------
 
 static GtkWidget *
-button_create (Popup *popup, const gchar *stock_id, GCallback callback, const gchar *tooltip)
+button_create (Popup *popup, const gchar *icon_name, GCallback callback, const gchar *tooltip)
 {
   GtkWidget *button;
   GtkWidget *image;
 
   button = gtk_button_new ();
-  gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
+  gtk_widget_set_focus_on_click (button, FALSE);
   gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
-  image = gtk_image_new_from_stock (stock_id, GTK_ICON_SIZE_MENU);
+  image = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU);
   gtk_container_add (GTK_CONTAINER (button), image);
   gtk_widget_set_tooltip_text (GTK_WIDGET (button), tooltip);
   g_signal_connect (G_OBJECT (button), "clicked", callback, popup);
@@ -750,26 +738,24 @@ static void
 button_bar_create (Popup *popup, GtkWidget *parent_box)
 {
   GtkWidget *inner_box;
-  GtkWidget *align;
   GtkWidget *insert_button;
   GtkWidget *delete_button;
 
-  inner_box = gtk_hbox_new (FALSE, 0);
+  inner_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
   gtk_box_pack_start (GTK_BOX (parent_box), inner_box, FALSE, TRUE, 0);
 
-  insert_button = button_create (popup, GTK_STOCK_ADD,
+  insert_button = button_create (popup, "list-add",
                                  G_CALLBACK (on_insert_button_clicked),
                                  "Add a new workspace");
   gtk_box_pack_start (GTK_BOX (inner_box), insert_button, FALSE, FALSE, 0);
 
-  delete_button = button_create (popup, GTK_STOCK_REMOVE,
+  delete_button = button_create (popup, "list-remove",
                                  G_CALLBACK (on_delete_button_clicked),
                                  "Remove this workspace (if empty)");
   gtk_box_pack_start (GTK_BOX (inner_box), delete_button, FALSE, FALSE, 0);
 
-  align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
-  popup->search_container = align;
-  gtk_box_pack_start (GTK_BOX (inner_box), align, TRUE, TRUE, 0);
+  popup->search_container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+  gtk_box_pack_start (GTK_BOX (inner_box), popup->search_container, TRUE, TRUE, 0);
 }
 
 //------------------------------------------------------------------------------
@@ -802,7 +788,6 @@ popup_create (SSScreen *screen)
   Popup *popup;
   GtkWidget *frame;
   GtkWidget *vbox;
-  GtkWidget *align;
 
   update_window_label_width(screen);
 
@@ -853,23 +838,23 @@ popup_create (SSScreen *screen)
   g_signal_connect (G_OBJECT (popup->window), "leave-notify-event",
     (GCallback) on_leave_notify_event,
     popup);
-  g_signal_connect_after (G_OBJECT (popup->window), "expose-event",
-    (GCallback) on_expose_event,
+  g_signal_connect_after (G_OBJECT (popup->window), "draw",
+    (GCallback) on_draw,
     popup);
 
-  vbox = gtk_vbox_new (FALSE, 2);
+  vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 2);
 
   frame = gtk_frame_new (NULL);
   gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
   gtk_container_add (GTK_CONTAINER (popup->window), frame);
   gtk_container_add (GTK_CONTAINER (frame), vbox);
 
-  align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
-  gtk_box_pack_start (GTK_BOX (vbox), align, TRUE, TRUE, 0);
-  gtk_container_add (GTK_CONTAINER (align), screen->widget);
-  popup->screen_container = align;
+  gtk_widget_set_halign (screen->widget, GTK_ALIGN_CENTER);
+  gtk_widget_set_valign (screen->widget, GTK_ALIGN_CENTER);
+  gtk_box_pack_start (GTK_BOX (vbox), screen->widget, TRUE, TRUE, 0);
+  popup->screen_container = vbox;
 
-  gtk_box_pack_start (GTK_BOX (vbox), gtk_hseparator_new (), FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox), gtk_separator_new (GTK_ORIENTATION_HORIZONTAL), FALSE, FALSE, 0);
   button_bar_create (popup, vbox);
 
   gtk_widget_show_all (popup->window);

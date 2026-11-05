@@ -15,6 +15,7 @@ struct _SSWindow {
   WnckWindow *    wnck_window;
 
   GtkWidget *   widget;
+  GtkWidget *   row;
   GtkWidget *   image;
   GtkWidget *   label;
 

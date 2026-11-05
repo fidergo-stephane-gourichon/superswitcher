@@ -10,6 +10,7 @@
 #include "workspace.h"
 #include "xinerama.h"
 
+#include <cairo-xlib.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <X11/extensions/Xcomposite.h>
@@ -58,7 +59,7 @@ init_composite (void)
   }
 
   XCompositeRedirectSubwindows (display,
-      GDK_WINDOW_XWINDOW (gdk_get_default_root_window ()),
+      GDK_WINDOW_XID (gdk_get_default_root_window ()),
       CompositeRedirectAutomatic);
   return TRUE;
 }
@@ -69,7 +70,7 @@ gboolean
 uninit_composite (void)
 {
   XCompositeUnredirectSubwindows (gdk_x11_get_default_xdisplay (),
-      GDK_WINDOW_XWINDOW (gdk_get_default_root_window ()),
+      GDK_WINDOW_XID (gdk_get_default_root_window ()),
       CompositeRedirectAutomatic);
   return TRUE;
 }
@@ -82,25 +83,35 @@ static void
 initialize_thumbnailer_pictures (SSThumbnailer *thumbnailer)
 {
   Display *display;
-  GdkScreen *screen;
-  XRenderPictFormat *format;
+  int x_screen;
+  Visual *visual;
+  XWindowAttributes window_attributes;
   XRenderPictureAttributes pa;
 
   display = gdk_x11_get_default_xdisplay ();
-  screen = gtk_widget_get_screen (thumbnailer->drawing_area);
-  format = XRenderFindVisualFormat (display, DefaultVisual (
-      display, gdk_screen_get_number (screen)));
+  x_screen = DefaultScreen (display);
+  visual = DefaultVisual (display, x_screen);
 
-  thumbnailer->thumbnail_pixmap = gdk_pixmap_new (
-      thumbnailer->drawing_area->window, THUMBNAIL_SIZE, THUMBNAIL_SIZE, -1);
+  thumbnailer->thumbnail_pixmap = XCreatePixmap (display,
+      RootWindow (display, x_screen), THUMBNAIL_SIZE, THUMBNAIL_SIZE,
+      DefaultDepth (display, x_screen));
+  thumbnailer->thumbnail_surface = cairo_xlib_surface_create (display,
+      thumbnailer->thumbnail_pixmap, visual, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
 
   thumbnailer->thumbnail_picture = XRenderCreatePicture (display,
-      GDK_DRAWABLE_XID (thumbnailer->thumbnail_pixmap), format, 0, NULL);
+      thumbnailer->thumbnail_pixmap, XRenderFindVisualFormat (display, visual), 0, NULL);
 
+  // Problem: the format of a picture must match the depth of its drawable, and
+  // windows with an alpha channel, which GTK 3 applications can have, do not
+  // have the depth of the default visual.
+  // Solution: use the visual of the window itself.
+  XGetWindowAttributes (display, wnck_window_get_xid (thumbnailer->wnck_window),
+      &window_attributes);
   pa.subwindow_mode = IncludeInferiors;
   thumbnailer->window_picture = XRenderCreatePicture (display,
       wnck_window_get_xid (thumbnailer->wnck_window),
-      format, CPSubwindowMode, &pa);
+      XRenderFindVisualFormat (display, window_attributes.visual),
+      CPSubwindowMode, &pa);
   XRenderSetPictureFilter (display, thumbnailer->window_picture,
       "good", NULL, 0);
 }
@@ -108,9 +119,8 @@ initialize_thumbnailer_pictures (SSThumbnailer *thumbnailer)
 //------------------------------------------------------------------------------
 
 static gboolean
-on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
+on_draw (GtkWidget *widget, cairo_t *c, gpointer data)
 {
-  GdkGC *gc;
   XTransform transform;
   double scale;
   int wx, wy, ww, wh;
@@ -124,10 +134,9 @@ on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
   thumbnailer = (SSThumbnailer *) data;
   window = thumbnailer->window;
 
-  if (thumbnailer->thumbnail_pixmap == NULL) {
+  if (thumbnailer->thumbnail_pixmap == None) {
     initialize_thumbnailer_pictures (thumbnailer);
   }
-  gc = gdk_gc_new (thumbnailer->thumbnail_pixmap);
 
   ss_xinerama_get_frame_extents (
       // TODO - should we cut out the ->workspace in the line below?
@@ -160,19 +169,21 @@ on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
   XRenderComposite (display, PictOpSrc,
     thumbnailer->window_picture, None, thumbnailer->thumbnail_picture,
     0, 0, 0, 0, 0, 0, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+  cairo_surface_mark_dirty (thumbnailer->thumbnail_surface);
 
-  offset_x = widget->allocation.x + (THUMBNAIL_SIZE - thumbnail_width) / 2;
-  offset_y = widget->allocation.y + (THUMBNAIL_SIZE - thumbnail_height) / 2;
+  offset_x = (THUMBNAIL_SIZE - thumbnail_width) / 2;
+  offset_y = (THUMBNAIL_SIZE - thumbnail_height) / 2;
 
-  gdk_draw_drawable (thumbnailer->drawing_area->window, gc,
-      thumbnailer->thumbnail_pixmap, 0, 0,
-      offset_x, offset_y, thumbnail_width, thumbnail_height);
+  // The XRender result fills the pixmap from its top left corner.
+  cairo_set_source_surface (c, thumbnailer->thumbnail_surface, offset_x, offset_y);
+  cairo_rectangle (c, offset_x, offset_y, thumbnail_width, thumbnail_height);
+  cairo_fill (c);
 
-  gdk_draw_rectangle (thumbnailer->drawing_area->window,
-      thumbnailer->drawing_area->style->black_gc, FALSE,
-      offset_x, offset_y, thumbnail_width - 1, thumbnail_height - 1);
+  cairo_set_source_rgb (c, 0, 0, 0);
+  cairo_set_line_width (c, 1.0);
+  cairo_rectangle (c, offset_x + 0.5, offset_y + 0.5, thumbnail_width - 1, thumbnail_height - 1);
+  cairo_stroke (c);
 
-  g_object_unref (gc);
   return FALSE;
 }
 
@@ -190,12 +201,13 @@ ss_thumbnailer_new (SSWindow *window, WnckWindow *wnck_window, GtkWidget *drawin
   t->window = window;
   t->wnck_window = wnck_window;
   t->drawing_area = drawing_area;
-  t->thumbnail_pixmap = NULL;
+  t->thumbnail_pixmap = None;
+  t->thumbnail_surface = NULL;
   t->thumbnail_picture = None;
   t->window_picture = None;
 
-  g_signal_connect (G_OBJECT (drawing_area), "expose-event",
-                    G_CALLBACK (on_expose_event),
+  g_signal_connect (G_OBJECT (drawing_area), "draw",
+                    G_CALLBACK (on_draw),
                     t);
   return t;
 }
@@ -212,13 +224,17 @@ ss_thumbnailer_free (SSThumbnailer *thumbnailer)
     return;
   }
 
-  if (thumbnailer->thumbnail_pixmap != NULL) {
-    g_object_unref (thumbnailer->thumbnail_pixmap);
-    thumbnailer->thumbnail_pixmap = NULL;
+  if (thumbnailer->thumbnail_surface != NULL) {
+    cairo_surface_destroy (thumbnailer->thumbnail_surface);
+    thumbnailer->thumbnail_surface = NULL;
   }
   if (thumbnailer->thumbnail_picture != None) {
     XRenderFreePicture (display, thumbnailer->thumbnail_picture);
     thumbnailer->thumbnail_picture = None;
+  }
+  if (thumbnailer->thumbnail_pixmap != None) {
+    XFreePixmap (display, thumbnailer->thumbnail_pixmap);
+    thumbnailer->thumbnail_pixmap = None;
   }
   if (thumbnailer->window_picture != None) {
     XRenderFreePicture (display, thumbnailer->window_picture);

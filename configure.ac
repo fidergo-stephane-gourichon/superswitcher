@@ -28,9 +28,8 @@ AM_GLIB_GNU_GETTEXT
 
 PKG_CHECK_MODULES(SUPERSWITCHER,
   glib-2.0
-  gdk-2.0
-  gtk+-2.0 >= 2.12
-  libwnck-1.0 >= 2.20
+  gtk+-x11-3.0 >= 3.22
+  libwnck-3.0 >= 3.36
   x11)
 AC_SUBST(SUPERSWITCHER_CFLAGS)
 AC_SUBST(SUPERSWITCHER_LIBS)
@@ -76,10 +75,11 @@ fi
 
 # XComposite, XRender etc. are similarly optional.
 if [$PKG_CONFIG --atleast-version 0.2 xcomposite] &&
-   [$PKG_CONFIG --atleast-version 0.6 xrender]; then
+   [$PKG_CONFIG --atleast-version 0.6 xrender] &&
+   [$PKG_CONFIG --exists cairo-xlib]; then
   echo "Building with xcomposite and friends (xrender, etc.)."
-  SUPERSWITCHER_CFLAGS="$SUPERSWITCHER_CFLAGS `$PKG_CONFIG --cflags xcomposite xrender`"
-  SUPERSWITCHER_LIBS="$SUPERSWITCHER_LIBS `$PKG_CONFIG --libs xcomposite xrender`"
+  SUPERSWITCHER_CFLAGS="$SUPERSWITCHER_CFLAGS `$PKG_CONFIG --cflags xcomposite xrender cairo-xlib`"
+  SUPERSWITCHER_LIBS="$SUPERSWITCHER_LIBS `$PKG_CONFIG --libs xcomposite xrender cairo-xlib`"
   AC_DEFINE(HAVE_XCOMPOSITE, , [If we have xcomposite])
 else
   echo "Building without xcomposite and friends (xrender, etc.)."

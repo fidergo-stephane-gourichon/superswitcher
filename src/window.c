@@ -5,6 +5,7 @@
 
 #include "draganddrop.h"
 #include "screen.h"
+#include "style.h"
 #include "workspace.h"
 #include "xinerama.h"
 
@@ -60,8 +61,13 @@ ss_window_set_italic (SSWindow *window, gboolean italic)
 void
 ss_window_set_selected (SSWindow *window, gboolean selected)
 {
-  gtk_widget_set_state (window->label,
-    selected ? GTK_STATE_SELECTED : GTK_STATE_NORMAL);
+  GtkStyleContext *context;
+  context = gtk_widget_get_style_context (window->row);
+  if (selected) {
+    gtk_style_context_add_class (context, SS_STYLE_CLASS_ACTIVE_WINDOW);
+  } else {
+    gtk_style_context_remove_class (context, SS_STYLE_CLASS_ACTIVE_WINDOW);
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -328,30 +334,6 @@ on_workspace_changed (WnckWindow *wnck_window, gpointer data)
 
 //------------------------------------------------------------------------------
 
-static gboolean
-on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
-{
-  SSWindow *window;
-  window = (SSWindow *) data;
-
-  if (window == window->screen->active_window) {
-    gtk_paint_box (widget->style,
-      widget->window,
-      GTK_STATE_NORMAL,
-      GTK_SHADOW_NONE,
-      NULL,
-      widget,
-      "menuitem",
-      widget->allocation.x      - 2,
-      widget->allocation.y      - 1,
-      widget->allocation.width  + 4,
-      widget->allocation.height + 2);
-  }
-  return FALSE;
-}
-
-//------------------------------------------------------------------------------
-
 SSWindow *
 ss_window_new (SSWorkspace *workspace, WnckWindow *wnck_window)
 {
@@ -360,7 +342,6 @@ ss_window_new (SSWorkspace *workspace, WnckWindow *wnck_window)
   GtkWidget *hbox;
   GtkWidget *image;
   GtkWidget *label;
-  GdkColor *color;
 #ifdef HAVE_XCOMPOSITE
   SSThumbnailer *thumbnailer;
 #endif
@@ -370,7 +351,8 @@ ss_window_new (SSWorkspace *workspace, WnckWindow *wnck_window)
   gtk_event_box_set_visible_window (GTK_EVENT_BOX (eventbox), FALSE);
   gtk_widget_set_tooltip_text (eventbox, wnck_window_get_name (wnck_window));
 
-  hbox = gtk_hbox_new (FALSE, 3);
+  hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 3);
+  gtk_style_context_add_class (gtk_widget_get_style_context (hbox), SS_STYLE_CLASS_WINDOW_ROW);
   gtk_container_add (GTK_CONTAINER (eventbox), hbox);
 
 #ifdef HAVE_XCOMPOSITE
@@ -394,15 +376,13 @@ ss_window_new (SSWorkspace *workspace, WnckWindow *wnck_window)
   gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
   gtk_label_set_max_width_chars (GTK_LABEL (label), workspace->screen->label_max_width_chars);
   gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_MIDDLE);
-  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-
-  color = & (gtk_widget_get_default_style ()->text[GTK_STATE_SELECTED]);
-  gtk_widget_modify_fg (label, GTK_STATE_SELECTED, color);
+  gtk_label_set_xalign (GTK_LABEL (label), 0.0);
 
   w->screen = workspace->screen;
   w->workspace = workspace;
   w->wnck_window = wnck_window;
   w->widget = eventbox;
+  w->row = hbox;
   w->image = image;
   w->label = label;
 #ifdef HAVE_XCOMPOSITE
@@ -432,9 +412,6 @@ ss_window_new (SSWorkspace *workspace, WnckWindow *wnck_window)
   w->signal_id_workspace_changed =
     g_signal_connect (G_OBJECT (wnck_window), "workspace-changed",
     (GCallback) on_workspace_changed,
-    w);
-  g_signal_connect (G_OBJECT (hbox), "expose-event",
-    (GCallback) on_expose_event,
     w);
   g_signal_connect (G_OBJECT (eventbox), "button-press-event",
     (GCallback) on_button_press_event,

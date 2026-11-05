@@ -51,6 +51,16 @@ ss_draganddrop_free (SSDragAndDrop *dnd)
 
 //------------------------------------------------------------------------------
 
+static void
+get_pointer_position (GtkWidget *widget, int *x, int *y)
+{
+  GdkDevice *pointer;
+  pointer = gdk_seat_get_pointer (gdk_display_get_default_seat (gtk_widget_get_display (widget)));
+  gdk_window_get_device_position (gtk_widget_get_window (widget), pointer, x, y, NULL);
+}
+
+//------------------------------------------------------------------------------
+
 void
 ss_draganddrop_on_motion (SSDragAndDrop *dnd)
 {
@@ -58,7 +68,7 @@ ss_draganddrop_on_motion (SSDragAndDrop *dnd)
   if (dnd->drag_start_widget == NULL) {
     return;
   }
-  gdk_window_get_pointer (dnd->drag_start_widget->window, &x, &y, NULL);
+  get_pointer_position (dnd->drag_start_widget, &x, &y);
 
   if ((!dnd->is_dragging) &&
     (gtk_drag_check_threshold (dnd->drag_start_widget,
@@ -112,9 +122,7 @@ ss_draganddrop_start (SSDragAndDrop *dnd, SSWindow *window, SSWorkspace *workspa
   dnd->drag_start_workspace = workspace;
   dnd->drag_start_widget = w;
   if (w != NULL) {
-    gdk_window_get_pointer (w->window,
-                            &(dnd->drag_start_x),
-                            &(dnd->drag_start_y), NULL);
+    get_pointer_position (w, &(dnd->drag_start_x), &(dnd->drag_start_y));
   } else {
     dnd->drag_start_x = -1;
     dnd->drag_start_y = -1;

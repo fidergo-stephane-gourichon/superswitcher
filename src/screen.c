@@ -600,8 +600,7 @@ update_window_label_width (SSScreen *screen)
   GList *j;
 
   context = gtk_widget_get_pango_context (screen->widget);
-  metrics = pango_context_get_metrics (context,
-    screen->widget->style->font_desc, NULL);
+  metrics = pango_context_get_metrics (context, NULL, NULL);
   char_width = PANGO_PIXELS (pango_font_metrics_get_approximate_char_width (metrics));
   g_logvar(char_width);
   pango_font_metrics_unref (metrics);
@@ -609,7 +608,8 @@ update_window_label_width (SSScreen *screen)
   // On which screen is the mouse pointer? Is it the most
   // straightforward way to anticipate where gtk will put our popup?
   gint x,y;
-  gdk_display_get_pointer(gdk_display_get_default(), NULL, &x, &y, NULL);
+  gdk_device_get_position (gdk_seat_get_pointer (gdk_display_get_default_seat (gdk_display_get_default ())),
+    NULL, &x, &y);
   g_debug("Mouse pointer at (%u,%u)\n", x, y);
 
   int screen_width = 800;
@@ -818,12 +818,12 @@ ss_screen_find_workspace_near_point (SSScreen *screen, int x, int y)
 {
   GList *i;
   SSWorkspace *workspace;
+  GtkAllocation a;
   workspace = NULL;
   for (i = screen->workspaces; i; i = i->next) {
     workspace = (SSWorkspace *) i->data;
-    if (x < (workspace->widget->allocation.x +
-      workspace->widget->allocation.width +
-      WORKSPACE_COLUMN_SPACING)) {
+    gtk_widget_get_allocation (workspace->widget, &a);
+    if (x < (a.x + a.width + WORKSPACE_COLUMN_SPACING)) {
       return workspace;
     }
   }
@@ -1040,7 +1040,7 @@ ss_screen_new (WnckScreen *wnck_screen, Display *x_display, Window x_root_window
   screen->screen_height = wnck_screen_get_height (wnck_screen);
   screen->screen_aspect = (double) screen->screen_height / (double) screen->screen_width;
 
-  screen->widget = gtk_hbox_new (FALSE, 12);
+  screen->widget = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
   g_object_ref (screen->widget);
   gtk_container_set_border_width (GTK_CONTAINER (screen->widget), 6);
 

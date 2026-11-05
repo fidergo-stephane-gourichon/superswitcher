@@ -12,6 +12,8 @@ superswitcher_SOURCES = \
   popup.h \
   screen.c \
   screen.h \
+  style.c \
+  style.h \
   superswitcher.c \
   thumbnailer.c \
   thumbnailer.h \
@@ -28,7 +30,8 @@ AM_CPPFLAGS = \
   -DSYSCONFDIR=\""$(sysconfdir)"\" \
   -DDATADIR=\""$(datadir)"\" \
   -DG_DISABLE_DEPRECATED \
-  -DGTK_DISABLE_DEPRECATED \
+  -DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_22 \
+  -DGDK_VERSION_MAX_ALLOWED=GDK_VERSION_3_22 \
   -DWNCK_DISABLE_DEPRECATED \
   -DWNCK_I_KNOW_THIS_IS_UNSTABLE
 

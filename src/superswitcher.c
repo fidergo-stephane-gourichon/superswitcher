@@ -12,6 +12,7 @@
 
 #include "screen.h"
 #include "popup.h"
+#include "style.h"
 
 #ifdef HAVE_DBUS_GLIB
 #include "dbus-object.h"
@@ -182,6 +183,12 @@ main (int argc, char **argv)
   GdkWindow *root;
   GOptionContext *context;
   GError *error;
+  WnckHandle *wnck_handle;
+
+  // Problem: on a Wayland session, GTK 3 prefers its Wayland backend, on which
+  // the Xlib calls of this program fail.
+  // Solution: run on X11 only, which in such a session means through Xwayland.
+  gdk_set_allowed_backends ("x11");
 
   gtk_init (&argc, &argv);
 
@@ -213,8 +220,10 @@ main (int argc, char **argv)
   }
 #endif
 
+  ss_style_init ();
+
   root = gdk_get_default_root_window ();
-  x_root_window = GDK_WINDOW_XWINDOW (root);
+  x_root_window = GDK_WINDOW_XID (root);
 
   gdk_window_add_filter (root, filter_func, NULL);
   if (!only_trigger_on_caps_lock) {
@@ -226,7 +235,8 @@ main (int argc, char **argv)
     grab (XK_Caps_Lock);
   }
 
-  screen = ss_screen_new (wnck_screen_get_default (), gdk_x11_get_default_xdisplay (), x_root_window);
+  wnck_handle = wnck_handle_new (WNCK_CLIENT_TYPE_APPLICATION);
+  screen = ss_screen_new (wnck_handle_get_default_screen (wnck_handle), gdk_x11_get_default_xdisplay (), x_root_window);
 
   gtk_main ();
 

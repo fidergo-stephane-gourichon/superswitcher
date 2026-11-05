@@ -17,9 +17,10 @@ struct _SSThumbnailer {
   WnckWindow *   wnck_window;
   GtkWidget *    drawing_area;
 
-  GdkPixmap *   thumbnail_pixmap;
-  Picture       thumbnail_picture;
-  Picture       window_picture;
+  Pixmap              thumbnail_pixmap;
+  cairo_surface_t *   thumbnail_surface;
+  Picture             thumbnail_picture;
+  Picture             window_picture;
 };
 
 SSThumbnailer *   ss_thumbnailer_new    (SSWindow *window, WnckWindow *wnck_window, GtkWidget *drawing_area);
