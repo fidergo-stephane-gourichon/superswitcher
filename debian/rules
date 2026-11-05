@@ -6,4 +6,4 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 override_dh_auto_install:
 	dh_auto_install
-	install -D data/SuperSwitcher.desktop debian/superswitcher/etc/xdg/autostart/SuperSwitcher.desktop
+	install -D -m 644 data/SuperSwitcher.desktop debian/superswitcher/etc/xdg/autostart/SuperSwitcher.desktop
