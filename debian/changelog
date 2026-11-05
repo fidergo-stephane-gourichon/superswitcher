@@ -1,3 +1,16 @@
+superswitcher (0.10.0-1) UNRELEASED; urgency=medium
+
+  * Port to GTK 3 and libwnck 43.
+  * Stop selecting viewport mode when the program starts before the window
+    manager has set its name.
+  * Exit in a Wayland session.
+  * Declare all build dependencies, so that the features of the package no
+    longer depend on the machine that built it.
+  * Use debhelper compatibility level 13 and all hardening flags.
+  * Add a manual page.
+
+ -- Stéphane Gourichon <stephane_dpkg@gourichon.org>  Thu, 05 Nov 2026 22:41:26 +0100
+
 superswitcher (0.9.3-1) UNRELEASED; urgency=medium
 
   * Fix wrong popup window width adjustment after display arrangement changes.

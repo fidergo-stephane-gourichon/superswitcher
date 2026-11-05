@@ -142,7 +142,7 @@ sudo apt install gnome-common intltool libcairo2-dev libdbus-glib-1-dev libgtk-3
 bash recompile_local_debian_package.sh
 ```
 
-The script will output a list of generated files, including a `.deb` file which is the compiled binary package, which you can install with e.g. `sudo dpkg --install /full/path/to/superswitcher_0.9.3-1_amd64.deb`.
+The script will output a list of generated files, including a `.deb` file which is the compiled binary package, which you can install with e.g. `sudo dpkg --install /full/path/to/superswitcher_0.10.0-1_amd64.deb`.
 
 Other topics
 ------------
