@@ -29,8 +29,8 @@ AM_GLIB_GNU_GETTEXT
 PKG_CHECK_MODULES(SUPERSWITCHER,
   glib-2.0
   gdk-2.0
-  gtk+-2.0 >= 2.6
-  libwnck-1.0 >= 2.10
+  gtk+-2.0 >= 2.12
+  libwnck-1.0 >= 2.20
   x11)
 AC_SUBST(SUPERSWITCHER_CFLAGS)
 AC_SUBST(SUPERSWITCHER_LIBS)
@@ -83,35 +83,6 @@ if [$PKG_CONFIG --atleast-version 0.2 xcomposite] &&
   AC_DEFINE(HAVE_XCOMPOSITE, , [If we have xcomposite])
 else
   echo "Building without xcomposite and friends (xrender, etc.)."
-fi
-
-
-# We would like to work on gtk+ 2.6 and libwnck 2.10.  This will need some
-# conditional compilation (i.e., #ifdef directives).
-if $PKG_CONFIG --atleast-version 2.8 gtk+-2.0; then
-  AC_DEFINE(HAVE_GTK_2_8, , [If we have gtk+ 2.8])
-  if $PKG_CONFIG --atleast-version 2.11 gtk+-2.0; then
-    echo "Building with gtk+ >= 2.11."
-    AC_DEFINE(HAVE_GTK_2_11, , [If we have gtk+ 2.11])
-  else
-    echo "Building with gtk+ >= 2.8."
-  fi
-else
-  echo "Building without gtk+ >= 2.8."
-fi
-
-
-if $PKG_CONFIG --atleast-version 2.12 libwnck-1.0; then
-  echo "Building with libwnck >= 2.12."
-  AC_DEFINE(HAVE_WNCK_2_12, , [If we have libwnck 2.12])
-  if $PKG_CONFIG --atleast-version 2.19.3.1 libwnck-1.0; then
-    echo "Building with libwnck >= 2.19.3.1."
-    AC_DEFINE(HAVE_WNCK_2_19_3_1, , [If we have libwnck 2.19.3.1])
-  else
-    echo "Building without libwnck >= 2.12."
-  fi
-else
-  echo "Building without libwnck >= 2.12."
 fi
 
 

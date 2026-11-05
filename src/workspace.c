@@ -205,7 +205,6 @@ on_motion_notify_event (GtkWidget *widget, GdkEventMotion *event, gpointer data)
 static void
 on_expose_event_draw_text (GtkWidget *widget, SSWorkspace *workspace)
 {
-#ifdef HAVE_GTK_2_8
   cairo_t *c;
   cairo_text_extents_t extents;
   int x, y;
@@ -225,7 +224,6 @@ on_expose_event_draw_text (GtkWidget *widget, SSWorkspace *workspace)
   cairo_move_to (c, x, y+1);
   cairo_show_text (c, workspace->title);
   cairo_destroy (c);
-#endif
 }
 
 //------------------------------------------------------------------------------

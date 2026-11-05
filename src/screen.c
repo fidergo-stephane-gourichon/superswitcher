@@ -673,7 +673,6 @@ update_window_label_width (SSScreen *screen)
 
 //------------------------------------------------------------------------------
 
-#ifdef HAVE_WNCK_2_19_3_1
 static void
 on_viewports_changed (WnckScreen *wnck_screen, gpointer data)
 {
@@ -697,16 +696,11 @@ on_viewports_changed (WnckScreen *wnck_screen, gpointer data)
   }
   g_signal_emit (screen, active_workspace_changed_signal, 0, NULL);
 }
-#endif
 
 //------------------------------------------------------------------------------
 
 static void
-#ifdef HAVE_WNCK_2_19_3_1
 on_active_window_changed (WnckScreen *wnck_screen, WnckWindow *previous_window, gpointer data)
-#else
-on_active_window_changed (WnckScreen *wnck_screen, gpointer data)
-#endif
 {
   SSScreen *screen;
   screen = (SSScreen *) data;
@@ -717,11 +711,7 @@ on_active_window_changed (WnckScreen *wnck_screen, gpointer data)
 //------------------------------------------------------------------------------
 
 static void
-#ifdef HAVE_WNCK_2_19_3_1
 on_active_workspace_changed (WnckScreen *wnck_screen, WnckWorkspace *previous_workspace, gpointer data)
-#else
-on_active_workspace_changed (WnckScreen *wnck_screen, gpointer data)
-#endif
 {
   SSScreen *screen;
   screen = (SSScreen *) data;
@@ -1073,10 +1063,6 @@ ss_screen_new (WnckScreen *wnck_screen, Display *x_display, Window x_root_window
   screen->label_max_width_chars = 256;
   update_window_label_width (screen);
 
-#ifndef HAVE_GTK_2_11
-  screen->tooltips = gtk_tooltips_new ();
-#endif
-
   screen->pointer_needs_recentering_on_focus_change = FALSE;
 #ifdef HAVE_GCONF
   load_from_gconf (screen);
@@ -1105,11 +1091,9 @@ ss_screen_new (WnckScreen *wnck_screen, Display *x_display, Window x_root_window
   g_signal_connect (G_OBJECT (wnck_screen), "active_workspace_changed",
     G_CALLBACK (on_active_workspace_changed),
     screen);
-#ifdef HAVE_WNCK_2_19_3_1
   g_signal_connect (G_OBJECT (wnck_screen), "viewports_changed",
     G_CALLBACK (on_viewports_changed),
     screen);
-#endif
   g_signal_connect (G_OBJECT (wnck_screen), "window_closed",
     G_CALLBACK (on_window_closed),
     screen);

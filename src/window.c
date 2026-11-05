@@ -283,13 +283,7 @@ on_name_changed (WnckWindow *wnck_window, gpointer data)
   window = (SSWindow *) data;
   name = wnck_window_get_name (wnck_window);
   gtk_label_set_text (GTK_LABEL (window->label), name);
-#ifdef HAVE_GTK_2_11
   gtk_widget_set_tooltip_text (window->widget, name);
-#else
-  if (window->workspace) {
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (window->screen->tooltips), window->widget, name, "");
-  }
-#endif
   gtk_widget_queue_draw (gtk_widget_get_toplevel (window->widget));
 }
 
@@ -300,15 +294,9 @@ on_state_changed (WnckWindow *wnck_window, WnckWindowState changed_mask, WnckWin
 {
   SSWindow *window;
   window = (SSWindow *) data;
-#ifdef HAVE_WNCK_2_12
   if (changed_mask & (WNCK_WINDOW_STATE_DEMANDS_ATTENTION | WNCK_WINDOW_STATE_URGENT)) {
     ss_window_set_bold (window, wnck_window_needs_attention (wnck_window));
   }
-#else
-  if (changed_mask & (WNCK_WINDOW_STATE_DEMANDS_ATTENTION)) {
-    ss_window_set_bold (window, wnck_window_demands_attention (wnck_window));
-  }
-#endif
   if (changed_mask & WNCK_WINDOW_STATE_MINIMIZED) {
     ss_window_set_italic (window, wnck_window_is_minimized (wnck_window));
   }
@@ -380,12 +368,7 @@ ss_window_new (SSWorkspace *workspace, WnckWindow *wnck_window)
 
   eventbox = gtk_event_box_new ();
   gtk_event_box_set_visible_window (GTK_EVENT_BOX (eventbox), FALSE);
-#ifdef HAVE_GTK_2_11
   gtk_widget_set_tooltip_text (eventbox, wnck_window_get_name (wnck_window));
-#else
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (workspace->screen->tooltips),
-    eventbox, wnck_window_get_name (wnck_window), "");
-#endif
 
   hbox = gtk_hbox_new (FALSE, 3);
   gtk_container_add (GTK_CONTAINER (eventbox), hbox);
@@ -463,15 +446,9 @@ ss_window_new (SSWorkspace *workspace, WnckWindow *wnck_window)
     (GCallback) on_motion_notify_event,
     w);
   g_object_ref (w->widget);
-#ifdef HAVE_WNCK_2_12
   if (wnck_window_needs_attention (wnck_window)) {
     ss_window_set_bold (w, TRUE);
   }
-#else
-  if (wnck_window_demands_attention (wnck_window)) {
-    ss_window_set_bold (w, TRUE);
-  }
-#endif
   return w;
 }
 

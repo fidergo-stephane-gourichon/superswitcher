@@ -559,7 +559,6 @@ on_leave_notify_event (GtkWidget *widget, GdkEvent *event, gpointer data)
 static gboolean
 on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
-#ifdef HAVE_GTK_2_8
   Popup *popup;
   SSScreen *screen;
   SSDragAndDrop *dnd;
@@ -645,7 +644,6 @@ on_expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
     cairo_stroke (c);
     cairo_destroy (c);
   }
-#endif
   return FALSE;
 }
 
@@ -692,12 +690,7 @@ button_create (Popup *popup, const gchar *stock_id, GCallback callback, const gc
   gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
   image = gtk_image_new_from_stock (stock_id, GTK_ICON_SIZE_MENU);
   gtk_container_add (GTK_CONTAINER (button), image);
-#ifdef HAVE_GTK_2_11
   gtk_widget_set_tooltip_text (GTK_WIDGET (button), tooltip);
-#else
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (popup->screen->tooltips),
-    button, tooltip, "");
-#endif
   g_signal_connect (G_OBJECT (button), "clicked", callback, popup);
 
   return button;
