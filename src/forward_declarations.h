@@ -17,6 +17,7 @@ typedef struct _SSXineramaScreen SSXineramaScreen;
 
 #define ABNORMAL_EXIT_CODE_ANOTHER_INSTANCE_IS_RUNNING  1
 #define ABNORMAL_EXIT_CODE_UNKNOWN_COMMAND_LINE_OPTION  2
+#define ABNORMAL_EXIT_CODE_WAYLAND_SESSION              3
 
 //#include <glib/gerror.h>
 //#include <glib/gtypes.h>

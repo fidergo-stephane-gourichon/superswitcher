@@ -209,6 +209,16 @@ main (int argc, char **argv)
     return 0;
   }
 
+  // Problem: the package autostarts this program in every session, and an
+  // X11 program cannot grab keys or see windows of a Wayland session.
+  // Solution: refuse Wayland only. XDG_SESSION_TYPE is not always "x11" in an
+  // X11 session, for example one started with startx.
+  if (g_strcmp0 (g_getenv ("XDG_SESSION_TYPE"), "wayland") == 0
+      || (g_getenv ("WAYLAND_DISPLAY") != NULL && *g_getenv ("WAYLAND_DISPLAY") != '\0')) {
+    g_printerr ("SuperSwitcher works only on X11, and this is a Wayland session.\n");
+    exit (ABNORMAL_EXIT_CODE_WAYLAND_SESSION);
+  }
+
 #ifdef HAVE_DBUS_GLIB
   // Note that this may exit(...) if another instance is already running.
   init_superswitcher_dbus ();
