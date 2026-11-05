@@ -3,7 +3,7 @@ set -eu
 
 declare -a DEFAULT_DISTROS DISTROS
 
-DEFAULT_DISTROS=(debian:stable debian:testing debian:oldstable debian:oldoldstable)
+DEFAULT_DISTROS=(debian:stable debian:testing debian:oldstable ubuntu:24.04 ubuntu:latest)
 
 # Defaults
 ENGINE="docker"
