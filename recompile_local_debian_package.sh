@@ -124,7 +124,7 @@ git clone "$PKGDIR" "${DIRNAMEFORDEB}"
 
 sed -E "1s/\([^)]+\)/(${DEBIAN_PACKAGE_VERSION_WITH_DEBIAN})/" -i "${DIRNAMEFORDEB}"/debian/changelog
 
-tar zcf ${NAMEFORTAR}.orig.tar.gz "${DIRNAMEFORDEB}"
+tar zcf ${NAMEFORTAR}.orig.tar.gz --exclude="${DIRNAMEFORDEB}/.git" --exclude="${DIRNAMEFORDEB}/debian" "${DIRNAMEFORDEB}"
 cd "${DIRNAMEFORDEB}"
 
 dpkg-checkbuilddeps
