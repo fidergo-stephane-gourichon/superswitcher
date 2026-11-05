@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Dependencies
-      run: sudo apt-get update && sudo apt-get install gnome-common libwnck-dev
+      run: sudo apt-get update && sudo apt-get install gnome-common intltool libcairo2-dev libdbus-glib-1-dev libgtk-3-dev libwnck-3-dev libx11-dev libxcomposite-dev libxinerama-dev libxrender-dev pkgconf
     - name: configure
       run: bash autogen.sh && ./configure
     - name: make

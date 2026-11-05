@@ -132,13 +132,13 @@ sudo rm /etc/xdg/autostart/SuperSwitcher.desktop
 
 ### Debian/Ubuntu package
 
-From this repository tree, you can easily build your own binary package for Ubuntu (not 24.04 and later at the moment) or Debian, using the supplied `recompile_local_debian_package.sh` script. If that doesn't work it's a bug and I'll be happy to hear about it.
+From this repository tree, you can easily build your own binary package for Ubuntu or Debian, on a release that has libwnck 43 or later, using the supplied `recompile_local_debian_package.sh` script. If that doesn't work it's a bug and I'll be happy to hear about it.
 
 You probably needs something like this:
 
 ``` default
-sudo apt install build-essential dpkg-dev debhelper git build-essential devscripts fakeroot lsb-release
-sudo apt install libwnck-dev # libwnck-3-dev in recent distro
+sudo apt install build-essential dpkg-dev debhelper git devscripts fakeroot lsb-release
+sudo apt install gnome-common intltool libcairo2-dev libdbus-glib-1-dev libgtk-3-dev libwnck-3-dev libx11-dev libxcomposite-dev libxinerama-dev libxrender-dev pkgconf
 bash recompile_local_debian_package.sh
 ```
 
