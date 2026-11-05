@@ -92,8 +92,7 @@ do
     ${ENGINE} build -t "$IMG" - <<EOF
 FROM $DISTRO_IMAGE
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends debhelper gnome-common git build-essential devscripts fakeroot lsb-release
-RUN set -euxv ; for X in libwnck-dev libwnck-3-dev ; do apt-get install -y --no-install-recommends "\$X" && exit 0 ; done ; echo >&2 "Could not install dev package for libwnck." ; exit 1
+    apt-get install -y --no-install-recommends debhelper gnome-common git build-essential devscripts fakeroot lsb-release intltool libcairo2-dev libdbus-glib-1-dev libgtk-3-dev libwnck-3-dev libx11-dev libxcomposite-dev libxinerama-dev libxrender-dev pkgconf
 EOF
 
     echo "Running build for $DISTRO with log to $LOGFILE"
