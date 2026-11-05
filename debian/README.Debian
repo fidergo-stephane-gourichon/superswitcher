@@ -6,7 +6,8 @@ From now on, debian package includes
     /etc/xdg/autostart/SuperSwitcher.desktop
 
 which causes it to run by default on graphical user sessions of all
-users.
+users.  In a Wayland session the program exits at once, because it
+works only on X11.
 
 ## If any user want to disable it.
 
@@ -22,14 +23,3 @@ and edit the copy so that the "Hidden" settings reads:
     Hidden=true
 
  -- Stéphane Gourichon <stephane_dpkg@gourichon.org>, Tue, 11 Feb 2020 15:02:52 +0100
-
-
-Note running instructions and caveats in README, especially:
-
-  SuperSwitcher is best enjoyed if you automatically start the program
-  whenever you log in.  To do this, from System -> Preferences -> Sessions,
-  go to the Startup Programs tab and add superswitcher.
-
-This might become automatic in a future version of the package.
-
- -- Andrew Kerr <drewkerr@gmail.com>, Thu, 26 Oct 2006 09:46:17 +1000
