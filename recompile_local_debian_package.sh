@@ -141,7 +141,7 @@ mkdir -p "$OUTDIR"
 
 cd ..
 
-cp -v *.* "$OUTDIR"
+find . -maxdepth 1 -type f -exec cp -v -t "$OUTDIR" {} +
 
 echo
 echo ================================================================
