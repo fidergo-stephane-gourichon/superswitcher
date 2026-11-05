@@ -1004,8 +1004,12 @@ ss_screen_get_type (void)
 static gboolean
 does_window_manager_use_viewports (WnckScreen *wnck_screen)
 {
-  return 0 == g_ascii_strncasecmp (
-    wnck_screen_get_window_manager_name (wnck_screen), "compiz", 6);
+  const char *name;
+
+  // The name is NULL while no window manager has set it, for example at
+  // autostart or during a replacement.
+  name = wnck_screen_get_window_manager_name (wnck_screen);
+  return name != NULL && 0 == g_ascii_strncasecmp (name, "compiz", 6);
 }
 
 //------------------------------------------------------------------------------
