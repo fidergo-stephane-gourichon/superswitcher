@@ -1,0 +1,52 @@
+.TH SUPERSWITCHER 1 "" "superswitcher" "User Commands"
+.SH NAME
+superswitcher \- window and workspace switching using the Super key
+.SH SYNOPSIS
+.B superswitcher
+[\fIOPTION\fR...]
+.SH DESCRIPTION
+SuperSwitcher replaces the Alt-Tab window switching and the
+Ctrl-Alt-arrow workspace switching of a desktop.
+While the program runs, holding the Super key shows a popup with the
+workspaces and their windows.
+Typing filters the windows by name, the arrow keys and the mouse activate
+a window, and the function keys move to a workspace.
+.PP
+The program works only on X11, and exits in a Wayland session.
+Only one instance runs at a time.
+.SH OPTIONS
+.TP
+.BR \-c ", " \-\-also\-trigger\-on\-caps\-lock
+Make the Caps Lock key also switch windows, as well as the Super key.
+.TP
+.BR \-C ", " \-\-only\-trigger\-on\-caps\-lock
+Make only the Caps Lock key switch windows, instead of the Super key.
+.TP
+.BR \-t ", " \-\-show\-window\-thumbnails
+Experimental: show window thumbnails instead of icons.
+.TP
+.BR \-v ", " \-\-version
+Show the version number and exit.
+.TP
+.BR \-h ", " \-\-help
+Show the help options and exit.
+.SH EXIT STATUS
+.TP
+.B 0
+Normal exit.
+.TP
+.B 1
+Another instance is already running.
+.TP
+.B 2
+Unknown command-line option.
+.TP
+.B 3
+This is a Wayland session.
+.SH FILES
+.TP
+.I /etc/xdg/autostart/SuperSwitcher.desktop
+Starts the program in the graphical sessions of all users.
+See
+.I /usr/share/doc/superswitcher/README.Debian
+to disable it.
