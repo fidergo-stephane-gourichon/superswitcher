@@ -1,4 +1,5 @@
 // Copyright (c) 2006 Nigel Tao.
+// Copyright (c) 2026 Stéphane Gourichon. Port to GTK 3 written with Claude Code (Anthropic).
 // Licenced under the GNU General Public Licence (GPL) version 2.
 
 #ifdef HAVE_XCOMPOSITE

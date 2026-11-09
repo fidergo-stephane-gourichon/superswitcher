@@ -4,8 +4,10 @@ Source: https://github.com/fidergo-stephane-gourichon/superswitcher
 
 Files: *
 Copyright: 2005-2006 Nigel Tao
-           2019 Stéphane Gourichon
+           2019, 2026 Stéphane Gourichon
 License: GPL-2+
+Comment: The changes of 2026 are the port to GTK 3, written with Claude Code
+ (Anthropic).
 
 Files: src/style.c
        src/style.h
