@@ -110,7 +110,11 @@ fi
 
 if [[ "${IS_CUSTOM_TAG:-}" == true ]]
 then
-    DEBIAN_PACKAGE_VERSION_BARE=${DEBIAN_PACKAGE_VERSION_BARE}-${GIT_TAG}
+    # Problem: a package of an untagged commit must be replaced by the package
+    # of the release, once it is tagged, but dpkg sorts 0.10.0-0.9.3-23-g1234567
+    # after 0.10.0. Solution: dpkg sorts "~" before anything, even the end of
+    # the version, so 0.10.0~0.9.3-23-g1234567 comes before 0.10.0.
+    DEBIAN_PACKAGE_VERSION_BARE=${DEBIAN_PACKAGE_VERSION_BARE}~${GIT_TAG}
     DEBIAN_PACKAGE_VERSION_WITH_DEBIAN=${DEBIAN_PACKAGE_VERSION_BARE}-1
 fi
 
